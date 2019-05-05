@@ -1,28 +1,55 @@
 import React, { Component, Fragment } from 'react';
+import Layout from '../layout/layout';
 import io from 'socket.io-client';
 
+
+const styles = {
+  controls: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  control: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    flexWrap: 'wrap',
+  },
+  content: {
+    width: '80%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignSelf: 'center',
+  }
+};
 
 class Receiver extends Component {
   state = {
     devices: [],
     outputDevice: null,
-    channel: 0,
-    cc: 44,
-    value: 0,
+    controls: null,
   }
 
   componentDidMount() {
     this.socket = io();
     this.socket.on('connect', socket => {
       console.log('connected');
-      this.socket.emit('join', 'receiver');
-      this.socket.on('message', this.handleMessage);
+      this.socket.on('controls', controls => {
+        this.setState(
+          { controls },
+          () => this.sendCCData()
+        );
+      });
+      navigator
+        .requestMIDIAccess()
+        .then((access) => this.accessGranted(access));
     });
-
-    navigator
-      .requestMIDIAccess()
-      .then((access) => this.accessGranted(access));
   }
+
+  accessGranted = midiAccess => {
+    this.access = midiAccess;
+    this.access.onstatechange = this.updateOutputDevices;
+    this.updateOutputDevices();
+  };
 
   updateOutputDevices = () => {
     const devices = [];
@@ -32,47 +59,49 @@ class Receiver extends Component {
     this.sendCCData();
   };
 
-  accessGranted = midiAccess => {
-    this.access = midiAccess;
-    this.access.onstatechange = this.updateOutputDevices;
-    this.updateOutputDevices();
-  };
-
   sendCCData = () => {
-    if(!this.outputDevice) {
+    if(!this.outputDevice || !this.state.controls) {
       console.log('no output');
       return;
     }
-    this.outputDevice.send([
-      0xB0 + (this.state.channel & 15),
-      this.state.cc & 127,
-      this.state.value & 127
-    ]);
-  };
-
-  handleMessage = message => {
-    const direction = parseFloat(message);
-    if(this.state.value + direction >= 0 &&
-       this.state.value + direction <= 127) {
-      this.setState({ value: this.state.value + direction }, this.sendCCData);
-    }
+    this.state.controls.forEach(control =>
+      this.outputDevice.send([
+        0xB0 + (control.channel & 15),
+        control.cc & 127,
+        Math.round(control.value) & 127
+      ])
+    );
   };
 
   render() {
+    const { controls } = this.state;
+    controls && console.log(controls.map(c => c.value));
+
     return (
-      <Fragment>
-        <h1>Receiver</h1>
-        <select onChange={e => this.setState({ outputDevice: this.state.devices[e.target.value] }, this.updateOutputDevices)}>
-          {this.state.devices.map((device, i) =>
-            <option key={device.id} value={i}>{device.name}</option>
-          )}
-        </select>
-        <h1>Channel:</h1>
-        <input type="number" value={this.state.channel} onChange={e => this.setState({ channel: e.target.value })} />
-        <h1>CC:</h1>
-        <input type="number" value={this.state.cc} onChange={e => this.setState({ cc: e.target.value })} />
-        <h1>Value: {this.state.value}</h1>
-      </Fragment>
+      <Layout title="Receiver" forceLandscape={false}>
+        <div style={styles.content}>
+          <h1>Receiver</h1>
+          <select onChange={e => this.setState({ outputDevice: this.state.devices[e.target.value] }, this.updateOutputDevices)}>
+            {this.state.devices.map((device, i) =>
+              <option key={device.id} value={i}>{device.name}</option>
+            )}
+          </select>
+
+          <div style={styles.controls}>
+            {!controls
+              ? <h1>Loading...</h1>
+              : controls.map((control, i) => (
+                <div key={i} style={styles.control}>
+                  <h1>#{i}</h1>
+                  <h1>CH: {control.channel}</h1>
+                  <h1>CC: {control.cc}</h1>
+                  <h1>Val: {control.value}</h1>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </Layout>
     );
   }
 }

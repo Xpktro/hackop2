@@ -2,12 +2,31 @@ const express = require('express');
 const next = require('next');
 const http = require('http');
 const socket = require('socket.io');
+let controls = require('./config').map(control => ({ ...control, value: control.min }));
 
 
 const port = parseInt(process.env.PORT, 10) || 3000;
-const dev = process.env.NODE_ENV !== 'production';
-const nextApp = next({ dev });
-const handle = nextApp.getRequestHandler();
+const nextApp = next({ dev: process.env.NODE_ENV !== 'production' });
+const nextRequestHandler = nextApp.getRequestHandler();
+
+const updateValue = (control, type) => {
+  const operations = {
+    '+': v => v + 1,
+    '-': v => v - 1,
+    default: v => v,
+  };
+
+  const newValue = (operations[type] || operations.default)(control.value);
+  return newValue >= control.min && newValue <= control.max
+    ? newValue
+    : control.value;
+};
+
+const handleSender = ({ control, type }) => controls.map((currentControl, index) =>
+  index === control ? { ...currentControl, value: updateValue(currentControl, type) } : currentControl
+);
+
+let latestUpdate = new Date();
 
 nextApp.prepare().then(() => {
   const app = express();
@@ -15,16 +34,22 @@ nextApp.prepare().then(() => {
   const io = socket(httpServer);
 
   app.get('*', (req, res) => {
-    return handle(req, res);
+    return nextRequestHandler(req, res);
   });
 
   io.on('connection', function (socket) {
     console.log('a user connected');
-    socket.on('join', room => socket.join(room));
+    socket.emit('controls', controls);
 
     socket.on('sender', function (msg) {
-      console.log('message: ' + msg);
-      socket.to('receiver').emit('message', msg);
+      console.log('message:', msg);
+      controls = handleSender(msg);
+      socket.emit('controls', controls);
+      const now = new Date();
+      if(now - latestUpdate >= 200) {
+        socket.broadcast.emit('controls', controls);
+        latestUpdate = now;
+      }
     });
   });
 
