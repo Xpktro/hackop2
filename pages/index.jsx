@@ -5,15 +5,16 @@ import Layout from '../layout/layout';
 
 const style = {
   root: {
+    height: '100%',
     margin: '0 auto',
     display: 'flex',
-    flexDirection: 'column',
     textAlign: 'center',
     color: 'white',
-    alignSelf: 'center',
+    alignItems: 'center',
     justifyItems: 'center',
   },
   qr: {
+    maxWidth: '100%',
     backgroundColor: 'white',
     padding: '1.5em',
   },
@@ -28,7 +29,7 @@ class Home extends Component {
 
   render() {
     return (
-      <Layout title="Enter the matrix">
+      <Layout title="Enter the matrix" forceLandscape={false}>
         {this.state.url && (
           <a href="/sender"style={style.root}>
             <QRCode

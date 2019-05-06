@@ -1,16 +1,18 @@
 module.exports = [
   {
-    icon: 'hands',
-    channel: 0,
-    cc: 44,
-    min: 0,
-    max: 127
-  },
-  {
     icon: 'triangle',
     channel: 0,
-    cc: 45,
-    min: 30,
-    max: 80
+    cc: 16,
+    min: 45,
+    max: 117,
+    increment: 1,
+  },
+  {
+    icon: 'hands',
+    channel: 0,
+    cc: 21,
+    min: 3,
+    max: 66,
+    increment: 2,
   },
 ];

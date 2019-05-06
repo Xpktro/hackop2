@@ -11,8 +11,8 @@ const nextRequestHandler = nextApp.getRequestHandler();
 
 const updateValue = (control, type) => {
   const operations = {
-    '+': v => v + 1,
-    '-': v => v - 1,
+    '+': v => v + control.increment,
+    '-': v => v - control.increment,
     default: v => v,
   };
 
@@ -22,8 +22,10 @@ const updateValue = (control, type) => {
     : control.value;
 };
 
-const handleSender = ({ control, type }) => controls.map((currentControl, index) =>
-  index === control ? { ...currentControl, value: updateValue(currentControl, type) } : currentControl
+const handleSender = ({ control: controlIndex, type }) => controls.map((currentControl, index) =>
+  index === controlIndex
+    ? { ...currentControl, value: updateValue(currentControl, type) }
+    : currentControl
 );
 
 let latestUpdate = new Date();
