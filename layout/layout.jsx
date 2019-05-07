@@ -31,8 +31,8 @@ export default ({ children, title = 'Default title', forceLandscape = true }) =>
 
       #orientation {
         display: none;
-        width: 80%;
-        height: 80%;
+        width: 100%;
+        height: 100%;
         align-self: center;
         margin: 0 auto;
         font-size: 3em;
@@ -50,9 +50,7 @@ export default ({ children, title = 'Default title', forceLandscape = true }) =>
       }
     `}</style>
     <div id="orientation">
-      <h4>
-        Rotate your device
-      </h4>
+      <img src="/static/rotate.gif" alt="rotate your device" />
     </div>
     <div id="content">
       {children}
