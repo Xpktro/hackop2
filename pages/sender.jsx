@@ -1,34 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import Layout from '../layout/layout';
 import io from 'socket.io-client';
+import styles from './sender.css.js'
 
-const styles = {
-  controls: {
-    display: 'flex',
-    flexDirection: 'row',
-    width: '100%',
-    height: '100%',
-  },
-  control: {
-    flex: 1,
-    display: 'flex',
-    height: '100%',
-    flexWrap: 'wrap',
-    justifyContent: 'center'
-  },
-  value: {
-    width: '100%',
-    height: '50%',
-  },
-  button: {
-    flex: 1,
-    height: '50%',
-    width: '50%',
-    backgroundColor: 'white'
-  },
-};
-
-class Home extends Component {
+class Sender extends Component {
   state = {
     controls: null,
   };
@@ -41,28 +16,48 @@ class Home extends Component {
   emit = (message) => () => {
     console.log('outgoing:', message);
     this.socket.emit('sender', message);
-  }
+  };
+
+  controlImage = ({ icon, value, max, min }) => (
+    <img
+      style={{
+        width: '100%',
+        transition: 'all .2s ease-in-out',
+        transform: `scale(${((value - min) / (max - min) * 0.9) + 0.1})`
+      }}
+      src={`/static/${icon}.svg`}
+      alt={icon}
+    />
+  );
+
 
   render() {
     const { controls } = this.state;
     controls && console.log(controls.map(c => c.value));
     return (
       <Layout title="Interactive performance">
-        <div style={styles.controls}>
-          {!controls
-            ? <h1>Loading...</h1>
-            : controls.map((control, i) => (
-              <div key={i} style={styles.control}>
-                <input style={styles.value} type="range" min={control.min} max={control.max} value={control.value} />
-                <button style={styles.button} onClick={this.emit({ control: i, type: '-' })}>-</button>
-                <button style={styles.button} onClick={this.emit({ control: i, type: '+' })}>+</button>
-              </div>
-            ))
-          }
+        <div className="sender">
+          <div className="controls">
+            {!controls
+              ? <div className="loading">Matrix Operator's Internet of Synths is loading...</div>
+              : controls.map((control, i) => (
+                <div key={i} className="control">
+                  <div className="value">
+                    {this.controlImage(control)}
+                  </div>
+                  <div className="buttons">
+                    <button onClick={this.emit({ control: i, type: '-' })}><div className={`operator minus minus-${control.icon}`} /></button>
+                    <button onClick={this.emit({ control: i, type: '+' })}><div className={`operator plus plus-${control.icon}`} /></button>
+                  </div>
+                </div>
+              ))
+            }
+          </div>
         </div>
+        <style jsx>{styles}</style>
       </Layout>
     );
   }
 }
 
-export default Home;
+export default Sender;

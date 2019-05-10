@@ -20,7 +20,7 @@ const style = {
   },
 };
 
-class Home extends Component {
+class Index extends Component {
   state = { url: null };
 
   componentDidMount() {
@@ -45,4 +45,4 @@ class Home extends Component {
   }
 }
 
-export default Home;
+export default Index;

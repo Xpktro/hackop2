@@ -7,18 +7,23 @@ export default ({ children, title = 'Default title', forceLandscape = true }) =>
       <title>{title}</title>
       <meta charSet='utf-8' />
       <meta name='viewport' content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-      <meta name="theme-color" content="#000000" />
+      <meta name="theme-color" content="#1c1c1f" />
     </Head>
     <style jsx global>{`
       body {
-        touch-action: manipulation;
-        background: black;
+        background: #1c1c1f url("/static/background.png") no-repeat center center fixed;
+        background-size: cover;
+
         color: white;
-        width: 100%;
-        height: 100%;
+        width: 100vw;
+        height: 100vh;
+
         margin: 0;
         font-family: monospace;
         font-size: 1.3rem;
+      }
+      *:focus {
+        outline: 0 !important;
       }
 
       #__next, #content {
@@ -40,11 +45,11 @@ export default ({ children, title = 'Default title', forceLandscape = true }) =>
         justify-content: center;
       }
 
-      @media only screen and (orientation:landscape) {
+      @media only screen and (orientation:portrait) {
         #content { display: flex; }
         #orientation { display: none; }
       }
-      @media only screen and (orientation:portrait) {
+      @media only screen and (orientation:landscape) {
         #content { display: ${forceLandscape ? 'none' : 'flex'}; }
         #orientation { display: ${forceLandscape ? 'flex' : 'none'}; }
       }
