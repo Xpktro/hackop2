@@ -62,7 +62,6 @@ export default css`
     align-items: center;
     width: 100%;
     height: 80%;
-    // padding: 0 3em;
   }
 
   button {

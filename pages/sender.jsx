@@ -42,9 +42,7 @@ class Sender extends Component {
               ? <div className="loading">Matrix Operator's Internet of Synths is loading...</div>
               : controls.map((control, i) => (
                 <div key={i} className="control">
-                  <div className="value">
-                    {this.controlImage(control)}
-                  </div>
+                  <div className="value">{this.controlImage(control)}</div>
                   <div className="buttons">
                     <button onClick={this.emit({ control: i, type: '-' })}><div className={`operator minus minus-${control.icon}`} /></button>
                     <button onClick={this.emit({ control: i, type: '+' })}><div className={`operator plus plus-${control.icon}`} /></button>

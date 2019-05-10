@@ -53,7 +53,23 @@ export default ({ children, title = 'Default title', forceLandscape = true }) =>
         #content { display: ${forceLandscape ? 'none' : 'flex'}; }
         #orientation { display: ${forceLandscape ? 'flex' : 'none'}; }
       }
+
+      #preload {
+        display: none;
+      }
     `}</style>
+    <div id="preload">
+      <img src="/static/circle.svg" />
+      <img src="/static/hexagon.svg" />
+      <img src="/static/button.png" />
+      <img src="/static/button-click.png" />
+      <img src="/static/minus.svg" />
+      <img src="/static/minus-circle.svg" />
+      <img src="/static/minus-hexagon.svg" />
+      <img src="/static/plus.svg" />
+      <img src="/static/plus-circle.svg" />
+      <img src="/static/plus-hexagon.svg" />
+    </div>
     <div id="orientation">
       <img src="/static/rotate.gif" alt="rotate your device" />
     </div>
