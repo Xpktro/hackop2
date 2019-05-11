@@ -11,13 +11,29 @@ export default ({ children, title = 'Default title', forceLandscape = true }) =>
       <meta name="theme-color" content="#1c1c1f" />
     </Head>
     <style jsx global>{`
-      body {
+      body:before {
+        content: "";
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -10;
+        // background: url(photos/2452.jpg) no-repeat center center;
         background: #1c1c1f url("/static/background.png") no-repeat center center fixed;
+
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
         background-size: cover;
+      }
+      body {
+        touch-action: manipulation;
 
         color: white;
-        width: 100vw;
-        height: 100vh;
+        width: 100%;
+        height: 100%;
 
         margin: 0;
         font-family: monospace;

@@ -38,6 +38,7 @@ export default css`
     padding-bottom: 1em;
     border-bottom: 2px solid black;
     margin-bottom: 1em;
+    height: 50%;
   }
 
   .control:last-child {
