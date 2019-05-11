@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import './normalize.css';
+import styles from './layout.css.js'
 
 export default ({ children, title = 'Default title', forceLandscape = true }) => (
   <>
@@ -74,7 +75,9 @@ export default ({ children, title = 'Default title', forceLandscape = true }) =>
       <img src="/static/rotate.gif" alt="rotate your device" />
     </div>
     <div id="content">
+      <p className="side-label">Internet of Synths - Matrix Operator</p>
       {children}
     </div>
+    <style jsx>{styles}</style>
   </>
 );

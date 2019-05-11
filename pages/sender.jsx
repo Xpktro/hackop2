@@ -22,7 +22,7 @@ class Sender extends Component {
     <img
       style={{
         width: '100%',
-        transition: 'all .2s ease-in-out',
+        transition: 'all .2s ease',
         transform: `scale(${((value - min) / (max - min) * 0.9) + 0.1})`
       }}
       src={`/static/${icon}.svg`}
